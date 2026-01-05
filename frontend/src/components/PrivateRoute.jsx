@@ -11,14 +11,20 @@ const PrivateRoute = ({ children, roleRequired }) => {
     if (roleRequired) {
         try {
             const decoded = jwtDecode(token);
-            // Assuming the JWT execution claim/payload for role is 'role' or we fetch user profile. 
-            // For MVP simplicty, let's assume 'role' isn't in token yet unless we customized TokenObtainPairView
-            // However, we didn't customize TokenObtainPairView serializer in backend step.
-            // So we might need to fetch profile or decode 'user_id' and get profile.
-            // For truly MVP, we will allow access if logged in, and component itself fetches data which will 403 if unauthorized.
-            // But let's try to be safer. If custom claims are not there, we can't check role sync.
-            // Strategy: Allow if token exists, let Backend handling permissions.
+            const userRole = decoded.role; // Custom claim we added in backend
+
+            if (userRole !== roleRequired) {
+                // Redirect based on their actual role if they try to access wrong page
+                if (userRole === 'customer') {
+                    return <Navigate to="/customer" replace />;
+                } else if (userRole === 'shop_owner') {
+                    return <Navigate to="/dashboard" replace />;
+                } else {
+                    return <Navigate to="/login" replace />;
+                }
+            }
         } catch (e) {
+            console.error("Token decode failed", e);
             return <Navigate to="/login" replace />;
         }
     }

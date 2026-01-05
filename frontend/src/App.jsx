@@ -7,6 +7,10 @@ import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import OwnerDashboard from './pages/OwnerDashboard';
+import CustomerDashboard from './pages/CustomerDashboard';
+import PricingManagement from './pages/PricingManagement';
+import RegisterShop from './pages/RegisterShop';
 import ShopList from './pages/ShopList';
 import ShopDetails from './pages/ShopDetails';
 import ShopOwnerDashboard from './pages/ShopOwnerDashboard';
@@ -19,12 +23,27 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-        <Route path="/shops" element={<PrivateRoute><ShopList /></PrivateRoute>} />
-        <Route path="/shops/:id" element={<PrivateRoute><ShopDetails /></PrivateRoute>} />
-        <Route path="/shop-admin" element={<PrivateRoute><ShopOwnerDashboard /></PrivateRoute>} />
-        <Route path="/manage-shop" element={<PrivateRoute><ShopManagement /></PrivateRoute>} />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        {/* Customer Routes */}
+        <Route path="/customer" element={<PrivateRoute roleRequired="customer"><CustomerDashboard /></PrivateRoute>} />
+        <Route path="/shops" element={<PrivateRoute roleRequired="customer"><ShopList /></PrivateRoute>} />
+        <Route path="/shops/:id" element={<PrivateRoute roleRequired="customer"><ShopDetails /></PrivateRoute>} />
+
+        {/* Shop Owner Routes */}
+        {/* Redirect /dashboard to /owner/dashboard or just keep using /dashboard but protect it */}
+        {/* Requirement says: /owner/dashboard */}
+        <Route path="/owner/dashboard" element={<PrivateRoute roleRequired="shop_owner"><OwnerDashboard /></PrivateRoute>} />
+        <Route path="/owner/register-shop" element={<PrivateRoute roleRequired="shop_owner"><RegisterShop /></PrivateRoute>} />
+        <Route path="/owner/pricing" element={<PrivateRoute roleRequired="shop_owner"><PricingManagement /></PrivateRoute>} />
+
+        {/* Keep legacy /dashboard for now as alias or redirect? Let's just create a redirect or duplicate for safety if user types it manually */}
+        <Route path="/dashboard" element={<Navigate to="/owner/dashboard" replace />} />
+
+        <Route path="/shop-admin" element={<PrivateRoute roleRequired="shop_owner"><ShopOwnerDashboard /></PrivateRoute>} />
+        <Route path="/manage-shop" element={<PrivateRoute roleRequired="shop_owner"><ShopManagement /></PrivateRoute>} />
+
+        {/* Redirect Root based on auth? For now navigate to login if not found or let PrivateRoute handle */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
       <ToastContainer position="bottom-right" />
     </BrowserRouter>

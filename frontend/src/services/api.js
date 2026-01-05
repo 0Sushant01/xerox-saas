@@ -60,4 +60,10 @@ export const orderService = {
     updateStatus: (id, status) => api.patch(`/orders/${id}/`, { status }),
 };
 
+export const pricingService = {
+    list: () => api.get('/pricing/'),
+    create: (data) => api.post('/pricing/', data),
+    delete: (id) => api.delete(`/pricing/${id}/`),
+};
+
 export default api;
