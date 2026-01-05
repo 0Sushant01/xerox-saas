@@ -6,6 +6,7 @@ from .serializers import RegisterSerializer, UserSerializer, CustomTokenObtainPa
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    authentication_classes = []
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer

@@ -159,7 +159,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     #https://xerox-saas.vercel.app/ hosting url
-    "https://xerox-saas.vercel.app/",
+    "https://xerox-saas.vercel.app",
 ]
 # For development convenience:
 CORS_ALLOW_ALL_ORIGINS = True
