@@ -21,3 +21,21 @@ class Pricing(models.Model):
 
     def __str__(self):
         return f"{self.shop.shop_name} - {self.print_type} - {self.side}"
+
+
+class BindingPricing(models.Model):
+    BINDING_TYPE_CHOICES = (
+        ('soft', 'Soft Binding'),
+        ('hard', 'Hard Binding'),
+        ('spiral', 'Spiral Binding'),
+    )
+
+    shop = models.ForeignKey('shops.Shop', on_delete=models.CASCADE, related_name='binding_pricings')
+    binding_type = models.CharField(max_length=20, choices=BINDING_TYPE_CHOICES)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    class Meta:
+        unique_together = ('shop', 'binding_type')
+
+    def __str__(self):
+        return f"{self.shop.shop_name} - {self.binding_type}"

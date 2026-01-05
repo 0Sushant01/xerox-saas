@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'https://xerox-saas.onrender.com/';
+//const API_URL = 'http://localhost:8000/';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -64,6 +65,14 @@ export const pricingService = {
     list: () => api.get('/pricing/'),
     create: (data) => api.post('/pricing/', data),
     delete: (id) => api.delete(`/pricing/${id}/`),
+
+    // Binding Pricing
+    listBinding: () => api.get('/pricing/binding/'),
+    createBinding: (data) => api.post('/pricing/binding/', data),
+    deleteBinding: (id) => api.delete(`/pricing/binding/${id}/`),
+
+    // Calculation
+    calculatePrice: (data) => api.post('/pricing/calculate-price/', data),
 };
 
 export default api;

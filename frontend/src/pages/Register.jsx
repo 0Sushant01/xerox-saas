@@ -114,20 +114,7 @@ const Register = () => {
                         {errors.confirm_password && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>{errors.confirm_password}</div>}
                     </div>
 
-                    <div>
-                        <label htmlFor="role">I am a:</label>
-                        <select
-                            id="role"
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            disabled={isSubmitting}
-                        >
-                            <option value="customer">Customer</option>
-                            <option value="shop_owner">Shop Owner</option>
-                        </select>
-                        {errors.role && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>{errors.role}</div>}
-                    </div>
+
 
                     <button
                         type="submit"
