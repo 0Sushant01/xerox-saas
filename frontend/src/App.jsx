@@ -16,6 +16,11 @@ import ShopDetails from './pages/ShopDetails';
 import ShopOwnerDashboard from './pages/ShopOwnerDashboard';
 import ShopManagement from './pages/ShopManagement';
 
+const HomeRedirect = () => {
+  const token = localStorage.getItem('access_token');
+  return token ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
+};
+
 function App() {
   return (
     <BrowserRouter>
@@ -42,8 +47,8 @@ function App() {
         <Route path="/shop-admin" element={<PrivateRoute roleRequired="shop_owner"><ShopOwnerDashboard /></PrivateRoute>} />
         <Route path="/manage-shop" element={<PrivateRoute roleRequired="shop_owner"><ShopManagement /></PrivateRoute>} />
 
-        {/* Redirect Root based on auth? For now navigate to login if not found or let PrivateRoute handle */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Redirect Root based on auth */}
+        <Route path="/" element={<HomeRedirect />} />
       </Routes>
       <ToastContainer position="bottom-right" />
     </BrowserRouter>
