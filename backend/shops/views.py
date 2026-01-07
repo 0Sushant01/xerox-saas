@@ -1,31 +1,43 @@
 from rest_framework import viewsets, permissions
 from .models import Shop
-from .serializers import ShopSerializer
+from .serializers import ShopSerializer, AdminShopSerializer
+
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated and request.user.role == 'admin':
+            return True
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.owner == request.user
 
 class IsShopOwnerUser(permissions.BasePermission):
     """
-    Allocates permissions for shop management actions to shop owners only.
+    Allocates permissions for shop management actions to shop owners and admins.
     """
     def has_permission(self, request, view):
-        # Allow read-only actions for everyone (authenticated or not, depending on other settings)
-        # But for 'create', strictly enforce 'shop_owner' role.
+        if request.user.is_authenticated and request.user.role == 'admin':
+            return True
         if request.method == 'POST':
             return request.user.is_authenticated and request.user.role == 'shop_owner'
         return True
 
 class ShopViewSet(viewsets.ModelViewSet):
     queryset = Shop.objects.all()
-    serializer_class = ShopSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsShopOwnerUser, IsOwnerOrReadOnly]
 
+    def get_serializer_class(self):
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'role') and self.request.user.role == 'admin':
+            return AdminShopSerializer
+        return ShopSerializer
+
     def perform_create(self, serializer):
-        # Double check in perform_create (redundant but safe)
-        if self.request.user.role != 'shop_owner':
-            raise permissions.PermissionDenied("Only shop owners can create shops.")
-        serializer.save(owner=self.request.user)
+        if self.request.user.role == 'admin':
+            # Admin must provide owner in validated_data or we need to handle it.
+            # Serializer saves whatever is passed. If 'owner' is in fields, it works.
+            # If not, we might need to modify serializer or passing logic. A simple save() is enough if serializer handles it.
+            serializer.save() 
+        elif self.request.user.role == 'shop_owner':
+            serializer.save(owner=self.request.user)
+        else:
+            raise permissions.PermissionDenied("Only shop owners or admins can create shops.")

@@ -11,5 +11,16 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.file and self.total_pages == 0:
+            try:
+                import pypdf
+                reader = pypdf.PdfReader(self.file.path)
+                self.total_pages = len(reader.pages)
+                super().save(update_fields=['total_pages'])
+            except Exception as e:
+                print(f"Error counting pages: {e}")
+
     def __str__(self):
         return self.file_name

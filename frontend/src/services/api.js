@@ -35,10 +35,17 @@ export const authService = {
     login: (data) => api.post('/auth/login/', data),
 };
 
+// New admin service
+export const adminService = {
+    getStats: () => api.get('/auth/admin/stats/'),
+    getUsers: () => api.get('/auth/users/'), // Router was mounted at 'users' inside users/urls.py; users/urls.py included at 'auth/'. Let's verify App routing.
+};
+
 export const shopService = {
     getAllShops: () => api.get('/shops/'),
     getShop: (id) => api.get(`/shops/${id}/`),
-    createShop: (data) => api.post('/shops/', data), // For owners
+    createShop: (data) => api.post('/shops/', data),
+    updateShop: (id, data) => api.patch(`/shops/${id}/`, data), // For admin enable/disable
 };
 
 export const documentService = {

@@ -1,9 +1,30 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const token = localStorage.getItem('access_token');
+
+    let dashboardPath = '/dashboard';
+    let userRole = null;
+
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            userRole = decoded.role;
+            if (userRole === 'customer') {
+                dashboardPath = '/customer';
+            } else if (userRole === 'shop_owner') {
+                dashboardPath = '/owner/dashboard';
+            }
+        } catch (e) {
+            console.error("Failed to decode token", e);
+        }
+    }
+
+    const isOnDashboard = location.pathname === dashboardPath;
 
     const handleLogout = () => {
         localStorage.removeItem('access_token');
@@ -19,7 +40,9 @@ const Navbar = () => {
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {token ? (
                         <>
-                            <Link to="/dashboard" className="btn btn-outline" style={{ border: 'none' }}>Dashboard</Link>
+                            {!isOnDashboard && (
+                                <Link to={dashboardPath} className="btn btn-outline" style={{ border: 'none' }}>Dashboard</Link>
+                            )}
                             <button onClick={handleLogout} className="btn btn-outline">Logout</button>
                         </>
                     ) : (

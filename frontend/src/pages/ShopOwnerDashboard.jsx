@@ -38,8 +38,8 @@ const ShopOwnerDashboard = () => {
                         <thead>
                             <tr style={{ textAlign: 'left', borderBottom: '1px solid #eee' }}>
                                 <th style={{ padding: '1rem' }}>ID</th>
-                                <th style={{ padding: '1rem' }}>File</th>
-                                <th style={{ padding: '1rem' }}>Config</th>
+                                <th style={{ padding: '1rem' }}>Items</th>
+                                <th style={{ padding: '1rem' }}>Total</th>
                                 <th style={{ padding: '1rem' }}>Status</th>
                                 <th style={{ padding: '1rem' }}>Action</th>
                             </tr>
@@ -47,12 +47,24 @@ const ShopOwnerDashboard = () => {
                         <tbody>
                             {orders.map(order => (
                                 <tr key={order.id} style={{ borderBottom: '1px solid #eee' }}>
-                                    <td style={{ padding: '1rem' }}>{order.id.substring(0, 8)}...</td>
-                                    <td style={{ padding: '1rem' }}>Doc #{order.document ? order.document.substring(0, 5) : 'N/A'}</td>
+                                    <td style={{ padding: '1rem', verticalAlign: 'top' }}>{order.id.substring(0, 8)}...</td>
                                     <td style={{ padding: '1rem' }}>
-                                        {order.copies}x {order.print_type}
+                                        {order.items && order.items.map((item, i) => (
+                                            <div key={i} style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                                                <div><strong>Doc:</strong> {item.document_name || item.document}</div>
+                                                <div>{item.copies}x {item.print_type}, {item.side}, {item.binding}</div>
+                                                {item.document_file && (
+                                                    <div>
+                                                        <a href={item.document_file} target="_blank" rel="noopener noreferrer" style={{ color: 'blue', textDecoration: 'underline' }}>
+                                                            Download File
+                                                        </a>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
+                                    <td style={{ padding: '1rem', verticalAlign: 'top' }}>₹{order.total_price}</td>
+                                    <td style={{ padding: '1rem', verticalAlign: 'top' }}>
                                         <span style={{
                                             padding: '0.25rem 0.5rem',
                                             borderRadius: '999px',
@@ -63,7 +75,7 @@ const ShopOwnerDashboard = () => {
                                             {order.status}
                                         </span>
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
+                                    <td style={{ padding: '1rem', verticalAlign: 'top' }}>
                                         <select
                                             value={order.status}
                                             onChange={(e) => handleStatusUpdate(order.id, e.target.value)}

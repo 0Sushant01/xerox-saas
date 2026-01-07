@@ -15,6 +15,14 @@ import ShopList from './pages/ShopList';
 import ShopDetails from './pages/ShopDetails';
 import ShopOwnerDashboard from './pages/ShopOwnerDashboard';
 import ShopManagement from './pages/ShopManagement';
+import CustomerOrders from './pages/CustomerOrders';
+
+// Admin Imports
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminLayout from './layouts/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminShops from './pages/admin/AdminShops';
+import AdminUsers from './pages/admin/AdminUsers';
 
 const HomeRedirect = () => {
   const token = localStorage.getItem('access_token');
@@ -31,6 +39,7 @@ function App() {
 
         {/* Customer Routes */}
         <Route path="/customer" element={<PrivateRoute roleRequired="customer"><CustomerDashboard /></PrivateRoute>} />
+        <Route path="/customer/orders" element={<PrivateRoute roleRequired="customer"><CustomerOrders /></PrivateRoute>} />
         <Route path="/shops" element={<PrivateRoute roleRequired="customer"><ShopList /></PrivateRoute>} />
         <Route path="/shops/:id" element={<PrivateRoute roleRequired="customer"><ShopDetails /></PrivateRoute>} />
 
@@ -46,6 +55,15 @@ function App() {
 
         <Route path="/shop-admin" element={<PrivateRoute roleRequired="shop_owner"><ShopOwnerDashboard /></PrivateRoute>} />
         <Route path="/manage-shop" element={<PrivateRoute roleRequired="shop_owner"><ShopManagement /></PrivateRoute>} />
+
+        {/* Admin Panel Routes */}
+        <Route path="/admin-panel/login" element={<AdminLogin />} />
+        <Route path="/admin-panel" element={<PrivateRoute roleRequired="admin"><AdminLayout /></PrivateRoute>}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="shops" element={<AdminShops />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="shops/new" element={<RegisterShop isAdmin={true} />} /> {/* Reusing RegisterShop? or need new? */}
+        </Route>
 
         {/* Redirect Root based on auth */}
         <Route path="/" element={<HomeRedirect />} />

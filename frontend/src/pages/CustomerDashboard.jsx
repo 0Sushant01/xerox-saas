@@ -18,7 +18,7 @@ const CustomerDashboard = () => {
                     <div className="card" style={{ boxShadow: 'none', border: '1px solid var(--border-color)' }}>
                         <h3>My Orders</h3>
                         <p>Track the status of your print jobs.</p>
-                        <button className="btn btn-outline" disabled>View Orders</button>
+                        <button className="btn btn-outline" onClick={() => navigate('/customer/orders')}>View Orders</button>
                     </div>
                 </div>
             </div>

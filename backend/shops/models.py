@@ -9,6 +9,7 @@ class Shop(models.Model):
     shop_name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     is_open = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
